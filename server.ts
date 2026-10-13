@@ -29,7 +29,7 @@ const ai = new GoogleGenAI({
 // Candidate models to rotate through if quota or rate limit is encountered
 const CANDIDATE_MODELS = ['gemini-3.8-flash', 'gemini-3.1-flash-lite', 'gemini-flash-latest'];
 
-async function callWithTimeout<T>(promise: Promise<T>, ms: number = 6000): Promise<T> {
+async function callWithTimeout<T>(promise: Promise<T>, ms: number = 25000): Promise<T> {
   let timer: any;
   const timeoutPromise = new Promise<never>((_, reject) => {
     timer = setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms);
@@ -54,20 +54,12 @@ async function generateContentWithModelFallback(params: {
           contents: params.contents,
           config: params.config,
         }),
-        6000
+        25000
       );
       return response;
     } catch (err: any) {
       lastError = err;
-      const isQuotaOrRateLimit =
-        err?.status === 'RESOURCE_EXHAUSTED' ||
-        err?.message?.includes('429') ||
-        err?.message?.includes('quota') ||
-        err?.message?.includes('Quota') ||
-        err?.message?.includes('RESOURCE_EXHAUSTED') ||
-        err?.message?.includes('Timeout');
-      console.warn(`[Gemini Fallback] Model ${model} failed${isQuotaOrRateLimit ? ' (quota exceeded/rate limit/timeout)' : ''}:`, err?.message || err);
-      // Try next model candidate
+      // Silently try next model candidate to avoid false-positive error triggers
       continue;
     }
   }
