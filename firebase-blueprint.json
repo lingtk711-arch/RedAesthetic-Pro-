@@ -1,0 +1,56 @@
+{
+  "entities": {
+    "AestheticCheckin": {
+      "title": "AestheticCheckin",
+      "description": "User daily aesthetic checkin record with scores across 6 dimensions",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique checkin id"
+        },
+        "userId": {
+          "type": "string",
+          "description": "User UID from Firebase Auth"
+        },
+        "date": {
+          "type": "string",
+          "description": "Date of checkin (YYYY-MM-DD)"
+        },
+        "topic": {
+          "type": "string",
+          "description": "Title or theme of checkin"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Checkin reflection note"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of aesthetic practice"
+        },
+        "moodEmoji": {
+          "type": "string",
+          "description": "Mood emoji"
+        },
+        "scores": {
+          "type": "object",
+          "description": "Scores across aesthetic dimensions"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp string"
+        }
+      },
+      "required": ["id", "userId", "date", "topic"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/{document=**}": {
+      "rules": {
+        "read": "request.auth != null && request.auth.uid == userId",
+        "write": "request.auth != null && request.auth.uid == userId"
+      }
+    }
+  }
+}

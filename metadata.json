@@ -1,0 +1,6 @@
+{
+  "name": "小红书美商逆袭策略顾问与主笔",
+  "description": "专为美商培养与审美逆袭赛道打造的小红书运营策略与KOC文案主笔工作台，融合7大小红书爆款SOP，提供账号定位、爆款文案生成、封面视觉指导与合规风控诊断。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

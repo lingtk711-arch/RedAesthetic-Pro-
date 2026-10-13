@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+    <script>
+      // Gracefully handle Vite HMR WebSocket in cloud container sandbox
+      (function() {
+        if (typeof window !== 'undefined' && window.WebSocket) {
+          var NativeWebSocket = window.WebSocket;
+          window.WebSocket = function(url, protocols) {
+            if (protocols === 'vite-hmr' || (typeof url === 'string' && (url.includes('@vite') || url.includes('token=')))) {
+              var target = new EventTarget();
+              var mockWs = {
+                readyState: 1, // OPEN
+                addEventListener: target.addEventListener.bind(target),
+                removeEventListener: target.removeEventListener.bind(target),
+                dispatchEvent: target.dispatchEvent.bind(target),
+                send: function() {},
+                close: function() {},
+                onopen: null,
+                onclose: null,
+                onerror: null,
+                onmessage: null,
+              };
+              // simulate successful open
+              setTimeout(function() {
+                var openEvt = new Event('open');
+                mockWs.dispatchEvent(openEvt);
+                if (typeof mockWs.onopen === 'function') mockWs.onopen(openEvt);
+              }, 0);
+              return mockWs;
+            }
+            return new NativeWebSocket(url, protocols);
+          };
+          window.WebSocket.prototype = NativeWebSocket.prototype;
+        }
+
+        window.addEventListener('error', function(e) {
+          if (e && (
+            (e.message && (e.message.includes('WebSocket') || e.message.includes('[vite]'))) ||
+            (e.filename && e.filename.includes('@vite/client'))
+          )) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+          }
+        }, true);
+      })();
+    </script>
+    <title>小红书美商逆袭策略顾问与主笔</title>
+    <meta name="description" content="专为美商培养与审美逆袭赛道打造的小红书运营策略与KOC文案主笔工作台，融合7大小红书爆款SOP，提供账号定位、爆款文案生成、封面视觉指导与合规风控诊断。" />
+    <meta property="og:title" content="RedAesthetic Pro · 小红书美商操盘工作台" />
+    <meta property="og:description" content="专为美商培养与审美逆袭赛道打造的小红书运营策略与KOC文案主笔工作台，融合7大小红书爆款SOP，提供账号定位、爆款文案生成、封面视觉指导与合规风控诊断。" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- PWA & Mobile Web App Meta -->
+    <meta name="theme-color" content="#8EA89D" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="美商操盘Pro" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/pwa-192x192.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+SC:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
